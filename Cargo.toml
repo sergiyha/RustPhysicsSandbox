@@ -1,0 +1,16 @@
+[package]
+name = "PhysicsSandbox"
+version = "0.1.0"
+authors = ["Serj Halanov"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kiss3d = "0.25"
+nalgebra = "0.22.0"
+nphysics3d = "0.17.0"
+ncollide3d = "0.24.0"
+
+
+
