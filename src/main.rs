@@ -18,39 +18,35 @@ use nphysics3d::object::{BodyPartHandle, BodySet};
 use ncollide3d::shape::{Cuboid, ShapeHandle};
 
 fn main() {
-	//main physics stuff
-	let mut mechanical_world = DefaultMechanicalWorld::new(Vector3::new(0.0, 0.0, 0.0));
-	mechanical_world.gravity = Vector3::y() * -9.81;
 
-	let mut geometrical_world = DefaultGeometricalWorld::new();
+	let mut mechanical_world = DefaultMechanicalWorld::new(Vector3::new(0.0, -9.81, 0.0));
+    let mut geometrical_world = DefaultGeometricalWorld::new();
 
-	let mut bodies = DefaultBodySet::new();
-	let mut colliders = DefaultColliderSet::new();
-	let mut joint_constraints = DefaultJointConstraintSet::new();
+    let mut bodies = DefaultBodySet::new();
+    let mut colliders = DefaultColliderSet::new();
+    let mut joint_constraints = DefaultJointConstraintSet::new();
 	let mut force_generators = DefaultForceGeneratorSet::new();
+	
 
 	//create rigid body
-	let mut rb = RigidBodyDesc::new().gravity_enabled(true).build();
-
-	//add rb to collection
+	let rb = RigidBodyDesc::new().mass(1.2).build();
 	let handle_rb = bodies.insert(rb);
-	//add collider to collection
 
 	//create collider
 	let shape = ShapeHandle::new(Cuboid::new(Vector3::new(1.0, 1.0, 1.0)));
-	let boxCollider = ColliderDesc::new(shape).build(BodyPartHandle(handle_rb, 0));
-	let collider_handler = colliders.insert(boxCollider);
+	let box_collider = ColliderDesc::new(shape).build(BodyPartHandle(handle_rb, 0));
+	let collider_handler = colliders.insert(box_collider);
 
+	//creare kiss window
 	let mut window = Window::new("Kiss3d: cube");
 	let mut c = window.add_cube(1.0, 1.0, 1.0);
 	c.set_color(1.0, 0.0, 0.0);
-
 	window.set_light(Light::StickToCamera);
 
-	let rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), 0.014);
-
+	//let rot = UnitQuaternion::from_axis_angle(&Vector3::y_axis(), 0.014);
 	//main loop
-	while !window.is_closed() {
+	while window.render() {
+
 		mechanical_world.step(
 			&mut geometrical_world,
 			&mut bodies,
@@ -58,7 +54,12 @@ fn main() {
 			&mut joint_constraints,
 			&mut force_generators,
 		);
+		
+		let mrb = bodies.rigid_body(handle_rb).expect("Rigid body not found.");
+		let pos = mrb.position();
 
-		c.prepend_to_local_rotation(&rot);
+		c.set_local_transformation(*pos);
+		//	c.append_translation();
 	}
 }
+
