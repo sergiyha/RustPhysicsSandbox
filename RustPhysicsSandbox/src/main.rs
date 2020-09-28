@@ -30,7 +30,7 @@ fn main() {
 
 	//create rigid body
 	let rb = RigidBodyDesc::new().mass(1.2).build();
-	let handle_rb = bodies.insert(rb);
+	let handle_rb =  bodies.insert(rb);
 
 	//create collider
 	let shape = ShapeHandle::new(Cuboid::new(Vector3::new(1.0, 1.0, 1.0)));
